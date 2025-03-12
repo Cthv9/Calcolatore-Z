@@ -26,8 +26,8 @@
     .content {
       margin-top: 50px;
       display: flex;
-      flex-direction: row;
-      align-items: flex-start;
+      flex-direction: column;
+      align-items: center;
       justify-content: center;
       gap: 40px;
       width: 100%;
@@ -98,18 +98,6 @@
     .section {
       display: none;
     }
-    /* Immagini e contenitore immagini */
-    .image-container {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-    .image-container img {
-      width: 350px;
-      max-width: 100%;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
     .footer-text {
       position: absolute;
       bottom: 10px;
@@ -119,14 +107,7 @@
     }
     /* Media query per schermi piccoli */
     @media (max-width: 768px) {
-      .content {
-        flex-direction: column;
-        align-items: center;
-      }
       .container {
-        width: 90%;
-      }
-      .image-container img {
         width: 90%;
       }
     }
@@ -136,10 +117,6 @@
 </head>
 <body>
   <div class="content">
-    <div class="image-container">
-      <img src="Immagine1.png" alt="S Series Table">
-      <img src="Immagine2.png" alt="E Series Table">
-    </div>
     <div class="container" id="capture">
       <h2>Calcolo Coefficiente Interceptor</h2>
       <form id="calculationForm">
@@ -242,10 +219,6 @@
       </div>
       <!-- Pulsante per salvare l'immagine -->
       <button id="saveButton" class="hidden" onclick="saveScreenshot()">Salva come Immagine</button>
-    </div>
-    <div class="image-container">
-      <img src="Immagine3.png" alt="Diagram Example">
-      <img src="Immagine4.png" alt="Z Calculation Example">
     </div>
   </div>
   <div class="footer-text">
