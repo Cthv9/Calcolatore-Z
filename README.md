@@ -1,9 +1,10 @@
 # 🧮 Calcolatore-Z
 
-**Calcolatore-Z** è una web app semplice e veloce per effettuare calcoli matematici direttamente dal browser. Pensata per essere leggera e intuitiva, è ideale per chi cerca uno strumento immediato e senza fronzoli.
+**Calcolatore-Z** è una web app semplice e veloce per effettuare il calcolo del coefficente di spinta degli interceptor direttamente dal browser. Il calcolo è automatico è non tiene in considerazione delle variabili strutturali dello scafo.
 
 👉 Live demo: https://cthv9.github.io/Calcolatore-Z
-[![Install App](https://img.shields.io/badge/⬇️%20Install%20Calcolatore-Z-25D366?style=for-the-badge&logo=whatsapp&logoColor=white)](https://cthv9.github.io/Calcolatore-Z/)
+
+[![Install App](https://img.shields.io/badge/⬇️%20Install%20Calcolatore-Z-25D366?style=for-the-badge&logoColor=white)](https://cthv9.github.io/Calcolatore-Z/)
 
 
 ---
