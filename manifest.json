@@ -1,6 +1,6 @@
 {
-  "name": "Calcolo Zipwake",
-  "short_name": "Zipwake",
+  "name": "Calcolatore-Z",
+  "short_name": "Calcolatore-Z",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#ffffff",
