@@ -1,4 +1,4 @@
-const CACHE_NAME = 'calcolo-zipwake-cache-v1';
+const CACHE_NAME = 'Calcolatore-Z-cache-v2';
 const urlsToCache = [
   './index.html',
   './manifest.json',
