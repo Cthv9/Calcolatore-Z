@@ -178,7 +178,7 @@
       </form>
       <div id="result" class="result"></div>
       <div id="infoNote" class="info-note hidden">
-        Nota: il coefficiente Z e la relativa valutazione seguono la metodologia "Quick Sizing" Zipwake (Z = somma lunghezze interceptor / baglio alla chine allo specchio di poppa). La spinta in kg è invece una <strong>stima teorica non calibrata</strong> su dati reali del produttore (pressione dinamica su area frontale, coefficiente di portanza da letteratura idrodinamica): trattala come ordine di grandezza, non come valore di progetto.
+        Nota: il coefficiente Z e la relativa valutazione seguono una metodologia standard di dimensionamento interceptor (Z = somma lunghezze interceptor / baglio alla chine allo specchio di poppa). La spinta in kg è invece una <strong>stima teorica non calibrata</strong> su dati reali di produzione (pressione dinamica su area frontale, coefficiente di portanza da letteratura idrodinamica): trattala come ordine di grandezza, non come valore di progetto.
       </div>
       <!-- Pulsante per salvare l'immagine -->
       <button id="saveButton" class="hidden" onclick="saveScreenshot()">Salva come Immagine</button>
@@ -191,15 +191,16 @@
   </div>
   <script>
     /* =========================================================================
-     * Catalogo modelli Zipwake (Serie E / Serie S)
-     * Fonte: Zipwake Series E / Series S Product Specification + Quick Sizing.
+     * Catalogo modelli interceptor (Serie E / Serie S)
+     * Fonte: schede tecniche di produzione delle due serie.
      *
      * - length: lunghezza nominale del modello (mm), usata per il calcolo
      *   dell'area reale (length × corsa lama di serie).
      * - zLength: lunghezza da usare nel calcolo del coefficiente Z (mm).
-     *   Per i modelli CHINE, secondo la regola ufficiale Zipwake ("a chine
-     *   interceptor's lift matches a straight interceptor one size larger"),
-     *   equivale alla lunghezza del modello dritto di taglia superiore.
+     *   Per i modelli CHINE, secondo la regola tecnica ("un interceptor
+     *   chine genera una spinta pari a un interceptor dritto di taglia
+     *   superiore"), equivale alla lunghezza del modello dritto di taglia
+     *   superiore.
      * - chineOf: per i modelli dritti che hanno un equivalente CHINE, l'id
      *   di quella variante (usato per suggerire il passaggio al chine).
      * ========================================================================= */
@@ -260,8 +261,8 @@
     }
 
     /* Soglie Minimo/Buono/Eccellente in funzione della lunghezza scafo (m).
-     * Approssimazione a gradini della fascia diagonale mostrata nella scheda
-     * "Quick Sizing" Zipwake (Z=0.3/0.6/0.9 tra 10 e 30 m di lunghezza). */
+     * Approssimazione a gradini della fascia diagonale di riferimento per il
+     * dimensionamento (Z=0.3/0.6/0.9 tra 10 e 30 m di lunghezza). */
     function getZThresholds(length) {
       if (length <= 10) return { min: 0.3, good: 0.6 };
       if (length <= 20) return { min: 0.4, good: 0.7 };
@@ -314,7 +315,7 @@
         return;
       }
 
-      // Coefficiente Z ufficiale Zipwake: somma lunghezze / baglio alla chine
+      // Coefficiente Z: somma lunghezze / baglio alla chine
       const zFactor = totalZLength / beam;
       const coveragePct = zFactor * 100; // Target ideale: Z = 1 → 100% dello specchio di poppa
 
@@ -324,7 +325,7 @@
       else if (zFactor < zGood) rating = 'Buono';
       else rating = 'Eccellente';
 
-      // Spinta stimata: F = 1/2 · ρ · V² · A · Cl, intervallo su Cl (letteratura, non calibrato Zipwake)
+      // Spinta stimata: F = 1/2 · ρ · V² · A · Cl, intervallo su Cl (letteratura, non calibrato su dati di produzione)
       const rho = 1025;              // kg/m³, acqua di mare
       const g = 9.81;                // m/s²
       const Vms = speedKnots * 0.514444; // nodi → m/s
