@@ -1,6 +1,6 @@
 # 🧮 Calcolatore-Z
 
-**Calcolatore-Z** è una web app semplice e veloce per effettuare il calcolo del coefficente di spinta degli interceptor direttamente dal browser. Il calcolo è automatico è non tiene in considerazione delle variabili strutturali dello scafo.
+**Calcolatore-Z** è una web app semplice e veloce per il pre-dimensionamento di interceptor Zipwake (Serie E / Serie S), direttamente dal browser. Calcola il coefficiente Z secondo la metodologia ufficiale "Quick Sizing" Zipwake e fornisce una stima indicativa della spinta generata.
 
 👉 Live demo: https://cthv9.github.io/Calcolatore-Z
 
@@ -14,41 +14,48 @@
 
 - **PWA ready**:
   - Installabile su Android, iOS e desktop;
-  - Calcolo del coefficiente Z;
-  - Calcolo della spinta in kg a 10 nodi;
-  - Funzione per salvare l'immagine;
-  - Indicazione di performace (minimo, buono, eccellente)
+  - Calcolo del coefficiente Z (Z = somma lunghezze interceptor / baglio alla chine allo specchio di poppa);
+  - Valutazione Minimo / Buono / Eccellente in base alla lunghezza dello scafo;
+  - Stima della spinta (kg) a una velocità di riferimento inseribile dall'utente;
+  - Consigli automatici: distanza dal target Z = 1, indicazione Serie S/E più adatta, suggerimento delle varianti CHINE dove disponibili;
+  - Funzione per salvare il risultato come immagine.
 
 ---
 
 ## 🛠️ Struttura del progetto
 
+```
 Calcolatore-Z/
-├── index.html # Pagina principale (UI + PWA banner)
-├── manifest.json # Configurazione PWA (icone, scope, colori)
-├── app.js # Validazioni, redirect
-├── service-worker.js # Cache offline e PWA
-└── icons/ # Icone PWA
-│ ├── favicon.png
-│ ├── icon-192.png
-│ └── icon-512.png
-└── README.md # Questo file
-
+├── index.html          # Pagina principale (UI, logica di calcolo, PWA banner)
+├── manifest.json        # Configurazione PWA (icone, scope, colori)
+├── service-worker.js    # Cache offline e PWA
+├── icons/                # Icone PWA
+│   ├── favicon.ico
+│   ├── icon-192.png
+│   └── icon-512.png
+└── README.md             # Questo file
+```
 
 ---
 
 ## 📲 Come usare
 
-Seleziona il modello interceptor da usare.
+1. Seleziona quante coppie/elementi interceptor installare.
+2. Per ciascuna sezione, scegli il modello (Serie E o Serie S) e la quantità.
+3. Inserisci lunghezza scafo, baglio alla chine allo specchio di poppa e velocità di riferimento.
+4. Clicca su "Calcola Coefficiente" per ottenere Z, valutazione, stima di spinta e consigli.
 
-Inserisci il numero delle lame da installare.
+---
 
-Clicca su calcola coefficiente per ottenere un risultato dinamico.
+## 📐 Note tecniche sul calcolo
+
+- **Coefficiente Z** e soglie di valutazione seguono la metodologia ufficiale Zipwake ("Quick Sizing"): il baglio da inserire è quello **alla chine, misurato allo specchio di poppa**, non il baglio massimo dello scafo.
+- Le varianti **CHINE** contribuiscono al calcolo con la lunghezza del modello dritto di taglia superiore nella stessa serie, secondo la regola Zipwake ("a chine interceptor's lift matches a straight interceptor one size larger").
+- La **spinta in kg** è una stima teorica (pressione dinamica sull'area frontale reale delle lame, con un coefficiente di portanza da letteratura idrodinamica, non da dati Zipwake) e viene mostrata come intervallo min–max: va presa come ordine di grandezza indicativo, non come dato di progetto.
 
 ---
 
 ## 📦 Tecnologie usate
-
 
 HTML5 / CSS3 responsive
 
@@ -57,6 +64,5 @@ Service Worker
 PWA (manifest, offline, icone)
 
 GitHub Pages
-
 
 ---
