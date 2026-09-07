@@ -1,10 +1,10 @@
-<!DOCTYPE html>  
+<!DOCTYPE html>
 <html lang="it">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Calcolatore-Z | By FD</title>
-  <link rel="icon" href="icons/favicon.ico" type="image/png">
+  <link rel="icon" href="icons/favicon.ico" type="image/x-icon">
   <!-- Collegamento al manifest per PWA -->
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#007bff">
@@ -62,6 +62,12 @@
       border-radius: 5px;
       border: 1px solid #ccc;
       font-size: 16px;
+      box-sizing: border-box;
+    }
+    .field-hint {
+      font-size: 0.75em;
+      color: #888;
+      margin-top: 3px;
     }
     .container button {
       width: 100%;
@@ -83,10 +89,16 @@
       padding: 15px;
       background-color: #e9ecef;
       border-radius: 10px;
-      text-align: center;
-      font-size: 18px;
+      text-align: left;
+      font-size: 16px;
       color: #333;
+      line-height: 1.5;
     }
+    .result .rating-Minimo { color: #b02a37; font-weight: bold; }
+    .result .rating-Buono { color: #b8860b; font-weight: bold; }
+    .result .rating-Eccellente { color: #1e7e34; font-weight: bold; }
+    .result .error { color: #b02a37; font-weight: bold; }
+    .result ul { margin: 6px 0 0 0; padding-left: 20px; }
     .info-note {
       font-size: 0.8em;
       color: #888;
@@ -98,6 +110,9 @@
     }
     .section {
       display: none;
+      border-top: 1px solid #eee;
+      padding-top: 10px;
+      margin-top: 10px;
     }
     .footer-text {
       position: absolute;
@@ -130,93 +145,40 @@
         <div id="section1" class="section">
           <h3>Coppia 1</h3>
           <label for="model1">Modello Interceptor:</label>
-          <select id="model1" name="model1">
-            <optgroup label="Serie E">
-              <option value="0.4">IT400 (0,4m)</option>
-              <option value="0.6">IT600 (0,6m)</option>
-              <option value="0.8">IT800 (0,8m)</option>
-              <option value="1.0">IT1000 (1,0m)</option>
-              <option value="0.4">IT400 CHINE (0,4m)</option>
-              <option value="0.6">IT600 CHINE (0,6m)</option>
-              <option value="0.6">IT600 TUNNEL Rx (0,6m)</option>
-            </optgroup>
-            <optgroup label="Serie S">
-              <option value="0.3">IT300 (0,3m)</option>
-              <option value="0.45">IT450 (0,45m)</option>
-              <option value="0.6">IT600 (0,6m)</option>
-              <option value="0.75">IT750 (0,75m)</option>
-              <option value="0.3">IT300 CHINE (0,3m)</option>
-              <option value="0.45">IT450 CHINE (0,45m)</option>
-              <option value="0.3">IT300 INTERMEDIATE (0,3m)</option>
-              <option value="0.45">IT450 Vx (0,45m)</option>
-            </optgroup>
-          </select>
+          <select id="model1" name="model1" class="model-select"></select>
           <label for="number1">Quantità:</label>
-          <input type="number" id="number1" name="number1" value="0">
+          <input type="number" id="number1" name="number1" value="0" min="0" step="1">
         </div>
         <div id="section2" class="section">
           <h3>Coppia 2 o singolo elemento</h3>
           <label for="model2">Modello Interceptor:</label>
-          <select id="model2" name="model2">
-            <optgroup label="Serie E">
-              <option value="0.4">IT400 (0,4m)</option>
-              <option value="0.6">IT600 (0,6m)</option>
-              <option value="0.8">IT800 (0,8m)</option>
-              <option value="1.0">IT1000 (1,0m)</option>
-              <option value="0.4">IT400 CHINE (0,4m)</option>
-              <option value="0.6">IT600 CHINE (0,6m)</option>
-              <option value="0.6">IT600 TUNNEL Rx (0,6m)</option>
-            </optgroup>
-            <optgroup label="Serie S">
-              <option value="0.3">IT300 (0,3m)</option>
-              <option value="0.45">IT450 (0,45m)</option>
-              <option value="0.6">IT600 (0,6m)</option>
-              <option value="0.75">IT750 (0,75m)</option>
-              <option value="0.3">IT300 CHINE (0,3m)</option>
-              <option value="0.45">IT450 CHINE (0,45m)</option>
-              <option value="0.3">IT300 INTERMEDIATE (0,3m)</option>
-              <option value="0.45">IT450 Vx (0,45m)</option>
-            </optgroup>
-          </select>
+          <select id="model2" name="model2" class="model-select"></select>
           <label for="number2">Quantità:</label>
-          <input type="number" id="number2" name="number2" value="0">
+          <input type="number" id="number2" name="number2" value="0" min="0" step="1">
         </div>
         <div id="section3" class="section">
           <h3>Coppia 3 o singolo elemento</h3>
           <label for="model3">Modello Interceptor:</label>
-          <select id="model3" name="model3">
-            <optgroup label="Serie E">
-              <option value="0.4">IT400 (0,4m)</option>
-              <option value="0.6">IT600 (0,6m)</option>
-              <option value="0.8">IT800 (0,8m)</option>
-              <option value="1.0">IT1000 (1,0m)</option>
-              <option value="0.4">IT400 CHINE (0,4m)</option>
-              <option value="0.6">IT600 CHINE (0,6m)</option>
-              <option value="0.6">IT600 TUNNEL Rx (0,6m)</option>
-            </optgroup>
-            <optgroup label="Serie S">
-              <option value="0.3">IT300 (0,3m)</option>
-              <option value="0.45">IT450 (0,45m)</option>
-              <option value="0.6">IT600 (0,6m)</option>
-              <option value="0.75">IT750 (0,75m)</option>
-              <option value="0.3">IT300 CHINE (0,3m)</option>
-              <option value="0.45">IT450 CHINE (0,45m)</option>
-              <option value="0.3">IT300 INTERMEDIATE (0,3m)</option>
-              <option value="0.45">IT450 Vx (0,45m)</option>
-            </optgroup>
-          </select>
+          <select id="model3" name="model3" class="model-select"></select>
           <label for="number3">Quantità:</label>
-          <input type="number" id="number3" name="number3" value="0">
+          <input type="number" id="number3" name="number3" value="0" min="0" step="1">
         </div>
         <label for="length">Lunghezza dello scafo (m):</label>
-        <input type="number" id="length" name="length" required>
-        <label for="beam">Larghezza baglio massimo (m):</label>
-        <input type="number" id="beam" name="beam" required>
+        <input type="number" id="length" name="length" min="0.1" step="0.1" required>
+
+        <label for="beam">Baglio alla chine allo specchio di poppa (m):</label>
+        <input type="number" id="beam" name="beam" min="0.1" step="0.1" required>
+        <div class="field-hint">Non il baglio massimo dello scafo: è la larghezza misurata tra le chine, esattamente sullo specchio di poppa.</div>
+
+        <label for="speed">Velocità di riferimento (nodi):</label>
+        <input type="number" id="speed" name="speed" min="0.1" step="0.5" required>
+        <div class="field-hint">Velocità a cui stimare la spinta (es. velocità di crociera dello scafo).</div>
+
         <button type="button" onclick="calculateCoefficient()">Calcola Coefficiente</button>
       </form>
       <div id="result" class="result"></div>
       <div id="infoNote" class="info-note hidden">
-        Nota: Il calcolo della spinta, è puramente indicativo e viene generato automaticamente, tenendo conto della densità dell'acqua marina, della superficie delle lame e della larghezza dello scafo.
+        Nota: il coefficiente Z e la relativa valutazione seguono la metodologia "Quick Sizing" Zipwake (Z = somma lunghezze interceptor / baglio alla chine allo specchio di poppa). La spinta in kg è invece una <strong>stima teorica non calibrata</strong> su dati reali del produttore (pressione dinamica su area frontale, coefficiente di portanza da letteratura idrodinamica): trattala come ordine di grandezza, non come valore di progetto.
       </div>
       <!-- Pulsante per salvare l'immagine -->
       <button id="saveButton" class="hidden" onclick="saveScreenshot()">Salva come Immagine</button>
@@ -228,6 +190,67 @@
     Made with ❤️ by FD
   </div>
   <script>
+    /* =========================================================================
+     * Catalogo modelli Zipwake (Serie E / Serie S)
+     * Fonte: Zipwake Series E / Series S Product Specification + Quick Sizing.
+     *
+     * - length: lunghezza nominale del modello (mm), usata per il calcolo
+     *   dell'area reale (length × corsa lama di serie).
+     * - zLength: lunghezza da usare nel calcolo del coefficiente Z (mm).
+     *   Per i modelli CHINE, secondo la regola ufficiale Zipwake ("a chine
+     *   interceptor's lift matches a straight interceptor one size larger"),
+     *   equivale alla lunghezza del modello dritto di taglia superiore.
+     * - chineOf: per i modelli dritti che hanno un equivalente CHINE, l'id
+     *   di quella variante (usato per suggerire il passaggio al chine).
+     * ========================================================================= */
+    const SERIES = {
+      E: { stroke: 0.06 }, // corsa lama Serie E: 60 mm
+      S: { stroke: 0.03 }  // corsa lama Serie S: 30 mm
+    };
+
+    const MODEL_CATALOG = [
+      // --- Serie E ---
+      { id: 'IT400-E',        series: 'E', label: 'IT400-E (0,4 m)',              length: 400,  zLength: 400,  chine: false, chineOf: 'IT400-E-CHINE' },
+      { id: 'IT600-E',        series: 'E', label: 'IT600-E (0,6 m)',              length: 600,  zLength: 600,  chine: false, chineOf: 'IT600-E-CHINE' },
+      { id: 'IT800-E',        series: 'E', label: 'IT800-E (0,8 m)',              length: 800,  zLength: 800,  chine: false },
+      { id: 'IT1000-E',       series: 'E', label: 'IT1000-E (1,0 m)',             length: 1000, zLength: 1000, chine: false },
+      { id: 'IT400-E-ROUND',  series: 'E', label: 'IT400-E ROUND R1000 (0,4 m)',  length: 400,  zLength: 400,  chine: false },
+      { id: 'IT600-E-TUNNEL', series: 'E', label: 'IT600-E TUNNEL Rx (0,6 m)',    length: 600,  zLength: 600,  chine: false },
+      { id: 'IT400-E-CHINE',  series: 'E', label: 'IT400-E CHINE (0,4 m)',        length: 400,  zLength: 600,  chine: true },
+      { id: 'IT600-E-CHINE',  series: 'E', label: 'IT600-E CHINE (0,6 m)',        length: 600,  zLength: 800,  chine: true },
+      // --- Serie S ---
+      { id: 'IT300-S',        series: 'S', label: 'IT300-S (0,3 m)',              length: 300,  zLength: 300,  chine: false, chineOf: 'IT300-S-CHINE' },
+      { id: 'IT450-S',        series: 'S', label: 'IT450-S (0,45 m)',             length: 450,  zLength: 450,  chine: false, chineOf: 'IT450-S-CHINE' },
+      { id: 'IT600-S',        series: 'S', label: 'IT600-S (0,6 m)',              length: 600,  zLength: 600,  chine: false },
+      { id: 'IT750-S',        series: 'S', label: 'IT750-S (0,75 m)',             length: 750,  zLength: 750,  chine: false },
+      { id: 'IT300-S-INTER',  series: 'S', label: 'IT300-S INTERMEDIATE (0,3 m)', length: 300,  zLength: 300,  chine: false },
+      { id: 'IT450-S-V',      series: 'S', label: 'IT450-S Vx (0,45 m)',          length: 450,  zLength: 450,  chine: false },
+      { id: 'IT300-S-CHINE',  series: 'S', label: 'IT300-S CHINE (0,3 m)',        length: 300,  zLength: 450,  chine: true },
+      { id: 'IT450-S-CHINE',  series: 'S', label: 'IT450-S CHINE (0,45 m)',       length: 450,  zLength: 600,  chine: true },
+    ];
+
+    function modelById(id) {
+      return MODEL_CATALOG.find(m => m.id === id);
+    }
+
+    function populateModelSelects() {
+      const selects = document.querySelectorAll('.model-select');
+      selects.forEach(select => {
+        const groupE = document.createElement('optgroup');
+        groupE.label = 'Serie E';
+        const groupS = document.createElement('optgroup');
+        groupS.label = 'Serie S';
+        MODEL_CATALOG.forEach(model => {
+          const opt = document.createElement('option');
+          opt.value = model.id;
+          opt.textContent = model.label;
+          (model.series === 'E' ? groupE : groupS).appendChild(opt);
+        });
+        select.appendChild(groupE);
+        select.appendChild(groupS);
+      });
+    }
+
     function updateSections() {
       const pairs = document.getElementById('pairs').value;
       const sections = [document.getElementById('section1'), document.getElementById('section2'), document.getElementById('section3')];
@@ -235,85 +258,118 @@
         section.style.display = (index < pairs) ? 'block' : 'none';
       });
     }
-    
+
+    /* Soglie Minimo/Buono/Eccellente in funzione della lunghezza scafo (m).
+     * Approssimazione a gradini della fascia diagonale mostrata nella scheda
+     * "Quick Sizing" Zipwake (Z=0.3/0.6/0.9 tra 10 e 30 m di lunghezza). */
+    function getZThresholds(length) {
+      if (length <= 10) return { min: 0.3, good: 0.6 };
+      if (length <= 20) return { min: 0.4, good: 0.7 };
+      return { min: 0.5, good: 0.8 };
+    }
+
     function calculateCoefficient() {
+      const resultEl = document.getElementById('result');
       const length = parseFloat(document.getElementById('length').value);
       const beam = parseFloat(document.getElementById('beam').value);
-      const model1Length = parseFloat(document.getElementById('model1').value);
-      const number1 = parseFloat(document.getElementById('number1').value);
-      let totalSurfaceLength = model1Length * number1;
-    
-      if (document.getElementById('section2').style.display === 'block') {
-        const model2Length = parseFloat(document.getElementById('model2').value);
-        const number2 = parseFloat(document.getElementById('number2').value);
-        totalSurfaceLength += model2Length * number2;
+      const speedKnots = parseFloat(document.getElementById('speed').value);
+
+      // Validazione input di base
+      if (!(length > 0) || !(beam > 0) || !(speedKnots > 0)) {
+        resultEl.innerHTML = '<span class="error">Inserisci lunghezza, baglio e velocità con valori numerici maggiori di zero.</span>';
+        document.getElementById('saveButton').classList.add('hidden');
+        document.getElementById('infoNote').classList.add('hidden');
+        return;
       }
-    
-      if (document.getElementById('section3').style.display === 'block') {
-        const model3Length = parseFloat(document.getElementById('model3').value);
-        const number3 = parseFloat(document.getElementById('number3').value);
-        totalSurfaceLength += model3Length * number3;
+
+      const pairs = parseInt(document.getElementById('pairs').value, 10);
+      const sectionIds = ['section1', 'section2', 'section3'];
+      const modelIds = ['model1', 'model2', 'model3'];
+      const numberIds = ['number1', 'number2', 'number3'];
+
+      let totalZLength = 0;   // m, per il coefficiente Z
+      let totalArea = 0;      // m², area frontale reale delle lame (per la spinta)
+      const seriesUsed = new Set();
+      const chineSuggestions = new Set();
+
+      for (let i = 0; i < 3; i++) {
+        if (i >= pairs) continue;
+        const model = modelById(document.getElementById(modelIds[i]).value);
+        const qty = parseFloat(document.getElementById(numberIds[i]).value) || 0;
+        if (!model || qty <= 0) continue;
+
+        totalZLength += (model.zLength / 1000) * qty;
+        totalArea += (model.zLength / 1000) * SERIES[model.series].stroke * qty;
+        seriesUsed.add(model.series);
+
+        if (model.chineOf) {
+          chineSuggestions.add(model.label + ' → ' + modelById(model.chineOf).label);
+        }
       }
-    
-      // Calcolo del coefficiente Z
-      const zFactor = totalSurfaceLength / beam;
-    
-      // Calcolo della spinta in kg a 10 nodi
-      const rho = 1025;           // kg/m³
-      const V = 10 * 0.514;       // 10 nodi ≈ 5.14 m/s
-      const g = 9.81;             // accelerazione gravitazionale in m/s²
-      const forceKg = ((totalSurfaceLength * totalSurfaceLength * rho * V * V) / beam) / g;
-    
+
+      if (totalZLength === 0) {
+        resultEl.innerHTML = '<span class="error">Seleziona almeno un interceptor con quantità maggiore di zero.</span>';
+        document.getElementById('saveButton').classList.add('hidden');
+        document.getElementById('infoNote').classList.add('hidden');
+        return;
+      }
+
+      // Coefficiente Z ufficiale Zipwake: somma lunghezze / baglio alla chine
+      const zFactor = totalZLength / beam;
+      const coveragePct = zFactor * 100; // Target ideale: Z = 1 → 100% dello specchio di poppa
+
+      const { min: zMin, good: zGood } = getZThresholds(length);
       let rating;
-      let recommendation;
-    
-      if (length <= 10) {
-        if (zFactor < 0.3) {
-          rating = "Minimo";
-          recommendation = "Considera di aggiungere più intercettori per migliorare l'efficienza.";
-        } else if (zFactor < 0.6) {
-          rating = "Buono";
-          recommendation = "La tua configurazione è buona, ma potresti migliorare l'efficienza con più intercettori.";
-        } else {
-          rating = "Eccellente";
-          recommendation = "La tua configurazione è ottimale.";
-        }
-      } else if (length <= 20) {
-        if (zFactor < 0.4) {
-          rating = "Minimo";
-          recommendation = "Considera di aggiungere più intercettori per migliorare l'efficienza.";
-        } else if (zFactor < 0.7) {
-          rating = "Buono";
-          recommendation = "La tua configurazione è buona, ma potresti migliorare l'efficienza con più intercettori.";
-        } else {
-          rating = "Eccellente";
-          recommendation = "La tua configurazione è ottimale.";
-        }
+      if (zFactor < zMin) rating = 'Minimo';
+      else if (zFactor < zGood) rating = 'Buono';
+      else rating = 'Eccellente';
+
+      // Spinta stimata: F = 1/2 · ρ · V² · A · Cl, intervallo su Cl (letteratura, non calibrato Zipwake)
+      const rho = 1025;              // kg/m³, acqua di mare
+      const g = 9.81;                // m/s²
+      const Vms = speedKnots * 0.514444; // nodi → m/s
+      const CL_MIN = 1.0;
+      const CL_MAX = 1.8;
+      const forceKgMin = (0.5 * rho * Vms * Vms * totalArea * CL_MIN) / g;
+      const forceKgMax = (0.5 * rho * Vms * Vms * totalArea * CL_MAX) / g;
+
+      // Consigli
+      const tips = [];
+      tips.push(`Obiettivo: avvicinare Z a 1 (copertura totale dello specchio di poppa). Copertura attuale: ${coveragePct.toFixed(0)}%.`);
+
+      if (rating === 'Minimo') {
+        tips.push('Configurazione sotto la soglia minima consigliata: valuta di aggiungere interceptor o di aumentarne la lunghezza.');
+      } else if (rating === 'Buono') {
+        tips.push('Configurazione buona: puoi ancora avvicinarti a Z = 1 aumentando la copertura dello specchio di poppa.');
       } else {
-        if (zFactor < 0.5) {
-          rating = "Minimo";
-          recommendation = "Considera di aggiungere più intercettori per migliorare l'efficienza.";
-        } else if (zFactor < 0.8) {
-          rating = "Buono";
-          recommendation = "La tua configurazione è buona, ma potresti migliorare l'efficienza con più intercettori.";
-        } else {
-          rating = "Eccellente";
-          recommendation = "La tua configurazione è ottimale.";
-        }
+        tips.push('Configurazione eccellente rispetto alla lunghezza dello scafo.');
       }
-    
+
+      if (length > 10 && seriesUsed.has('S') && !seriesUsed.has('E')) {
+        tips.push('Scafo sopra i 10 m: in linea generale si consiglia la Serie E. La Serie S è compatibile e può essere abbinata alla Serie E, ma non viceversa: valuta di integrare o passare a interceptor Serie E.');
+      } else if (length <= 10 && seriesUsed.has('E') && !seriesUsed.has('S')) {
+        tips.push('Scafo entro i 10 m: la Serie S è generalmente sufficiente e più economica. La Serie E resta comunque compatibile, se già scelta per altri motivi.');
+      } else if (seriesUsed.has('E') && seriesUsed.has('S')) {
+        tips.push('Configurazione mista Serie S + Serie E: combinazione supportata (la Serie S è compatibile con la Serie E).');
+      }
+
+      if (chineSuggestions.size > 0) {
+        tips.push('A parità di lunghezza, la variante CHINE offre prestazioni superiori: valuta la sostituzione dove possibile → ' + Array.from(chineSuggestions).join('; ') + '.');
+      }
+
       const resultText = `
-          Coefficiente Z: ${zFactor.toFixed(2)}<br>
-          Spinta a 10 nodi: ${forceKg.toFixed(0)} kg<br>
-          Valutazione: ${rating}<br>
-          Consiglio: ${recommendation}
+          Coefficiente Z: <strong>${zFactor.toFixed(2)}</strong><br>
+          Valutazione: <span class="rating-${rating}">${rating}</span><br>
+          Spinta stimata a ${speedKnots} nodi: <strong>${forceKgMin.toFixed(0)}–${forceKgMax.toFixed(0)} kg</strong> (stima teorica, intervallo indicativo)<br>
+          <strong>Consigli:</strong>
+          <ul>${tips.map(t => `<li>${t}</li>`).join('')}</ul>
       `;
-      document.getElementById('result').innerHTML = resultText;
+      resultEl.innerHTML = resultText;
       // Mostra il pulsante per salvare l'immagine e la nota informativa
       document.getElementById('saveButton').classList.remove('hidden');
       document.getElementById('infoNote').classList.remove('hidden');
     }
-    
+
     function saveScreenshot() {
       html2canvas(document.querySelector("#capture")).then(canvas => {
         const link = document.createElement('a');
@@ -322,11 +378,12 @@
         link.click();
       });
     }
-    
+
     window.onload = function() {
+      populateModelSelects();
       updateSections();
     };
-    
+
     // Registrazione del service worker per PWA
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function() {
@@ -339,7 +396,7 @@
           });
       });
     }
-    
+
     // Gestione dell'evento beforeinstallprompt per forzare il prompt di installazione
     let deferredPrompt;
     window.addEventListener('beforeinstallprompt', (e) => {
@@ -348,7 +405,7 @@
       // Mostra il pulsante di installazione
       document.getElementById('installButton').classList.remove('hidden');
     });
-    
+
     document.getElementById('installButton').addEventListener('click', () => {
       if (deferredPrompt) {
         deferredPrompt.prompt();
