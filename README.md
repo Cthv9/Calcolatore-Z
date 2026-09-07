@@ -1,6 +1,6 @@
 # 🧮 Calcolatore-Z
 
-**Calcolatore-Z** è una web app semplice e veloce per il pre-dimensionamento di interceptor Zipwake (Serie E / Serie S), direttamente dal browser. Calcola il coefficiente Z secondo la metodologia ufficiale "Quick Sizing" Zipwake e fornisce una stima indicativa della spinta generata.
+**Calcolatore-Z** è una web app semplice e veloce per il pre-dimensionamento di interceptor (Serie E / Serie S), direttamente dal browser. Calcola il coefficiente Z secondo una metodologia standard di dimensionamento interceptor e fornisce una stima indicativa della spinta generata.
 
 👉 Live demo: https://cthv9.github.io/Calcolatore-Z
 
@@ -49,9 +49,9 @@ Calcolatore-Z/
 
 ## 📐 Note tecniche sul calcolo
 
-- **Coefficiente Z** e soglie di valutazione seguono la metodologia ufficiale Zipwake ("Quick Sizing"): il baglio da inserire è quello **alla chine, misurato allo specchio di poppa**, non il baglio massimo dello scafo.
-- Le varianti **CHINE** contribuiscono al calcolo con la lunghezza del modello dritto di taglia superiore nella stessa serie, secondo la regola Zipwake ("a chine interceptor's lift matches a straight interceptor one size larger").
-- La **spinta in kg** è una stima teorica (pressione dinamica sull'area frontale reale delle lame, con un coefficiente di portanza da letteratura idrodinamica, non da dati Zipwake) e viene mostrata come intervallo min–max: va presa come ordine di grandezza indicativo, non come dato di progetto.
+- **Coefficiente Z** e soglie di valutazione seguono una metodologia standard di dimensionamento interceptor: il baglio da inserire è quello **alla chine, misurato allo specchio di poppa**, non il baglio massimo dello scafo.
+- Le varianti **CHINE** contribuiscono al calcolo con la lunghezza del modello dritto di taglia superiore nella stessa serie, secondo la regola tecnica per cui un interceptor chine genera una spinta equivalente a un interceptor dritto di taglia superiore.
+- La **spinta in kg** è una stima teorica (pressione dinamica sull'area frontale reale delle lame, con un coefficiente di portanza da letteratura idrodinamica, non da dati di produzione) e viene mostrata come intervallo min–max: va presa come ordine di grandezza indicativo, non come dato di progetto.
 
 ---
 
