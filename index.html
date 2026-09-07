@@ -276,6 +276,77 @@
     .badge-Buono { background-color: var(--warn-bg); color: var(--warn-text); }
     .badge-Eccellente { background-color: var(--good-bg); color: var(--good-text); }
 
+    /* Diagramma di ingombro sullo specchio di poppa */
+    .diagram { margin-top: 18px; }
+    .diagram-svg {
+      width: 100%;
+      height: 30px;
+      display: block;
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      overflow: hidden;
+    }
+    .band-min { fill: var(--danger-bg); }
+    .band-good { fill: var(--warn-bg); }
+    .band-exc { fill: var(--good-bg); }
+    .target-line { stroke: var(--text-muted); stroke-width: 0.6; stroke-dasharray: 2 1.4; }
+    .diagram-axis {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.68rem;
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+    .diagram-legend {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 6px;
+    }
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+    .legend-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .legend-dot-Minimo { background: var(--danger-text); }
+    .legend-dot-Buono { background: var(--warn-text); }
+    .legend-dot-Eccellente { background: var(--good-text); }
+
+    /* Barra range di spinta (min-max) */
+    .range-bar { margin-top: 8px; }
+    .range-track {
+      position: relative;
+      height: 6px;
+      border-radius: 4px;
+      background: var(--border);
+      overflow: hidden;
+    }
+    .range-fill {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      background: var(--accent);
+      opacity: 0.55;
+      border-radius: 4px;
+    }
+    .range-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.7rem;
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
     .tips {
       margin: 16px 0 0 0;
       padding: 0;
@@ -310,6 +381,23 @@
       text-align: center;
     }
 
+    /* Card di esportazione: fuori schermo ma sempre "renderizzata" (necessario
+     * perché html2canvas non cattura elementi con display:none), usata per
+     * generare uno screenshot pulito senza i controlli del form. */
+    .export-card {
+      position: fixed;
+      top: 0;
+      left: -10000px;
+      width: 420px;
+      background: var(--surface);
+      color: var(--text);
+      padding: 24px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+    }
+    .export-card .app-header { margin-bottom: 18px; }
+    .export-card .result-panel { margin-top: 0; border: none; padding: 0; background: transparent; }
+
     /* Comparsa morbida del pannello risultati (rispetta reduced-motion) */
     @media (prefers-reduced-motion: no-preference) {
       .result-panel[data-state="content"] {
@@ -331,7 +419,7 @@
 </head>
 <body>
   <div class="content">
-    <div class="container" id="capture">
+    <div class="container">
       <div class="app-header">
         <h1>Calcolo Coefficiente Interceptor</h1>
         <p>Dimensionamento rapido e stima di spinta per interceptor Serie E / Serie S.</p>
@@ -374,9 +462,9 @@
           <input type="number" id="beam" name="beam" min="0.1" step="0.1" required>
           <div class="field-hint">Non il baglio massimo dello scafo: è la larghezza misurata tra le chine, esattamente sullo specchio di poppa.</div>
 
-          <label for="speed">Velocità di riferimento (nodi)</label>
-          <input type="number" id="speed" name="speed" min="0.1" step="0.5" required>
-          <div class="field-hint">Velocità a cui stimare la spinta (es. velocità di crociera dello scafo).</div>
+          <label for="speed">Velocità di riferimento (nodi) — facoltativo</label>
+          <input type="number" id="speed" name="speed" min="0.1" step="0.5">
+          <div class="field-hint">Serve solo per stimare la spinta (es. velocità di crociera). Se lasci il campo vuoto, calcolo comunque il coefficiente Z senza la stima di spinta.</div>
 
           <button type="button" class="btn-primary" onclick="calculateCoefficient()">Calcola coefficiente</button>
         </fieldset>
@@ -389,18 +477,39 @@
           <div class="stat-grid">
             <div class="stat">
               <span class="stat-label">Coefficiente Z</span>
-              <span class="stat-value" id="zValue">-</span>
+              <span class="stat-value js-z">-</span>
             </div>
             <div class="stat">
               <span class="stat-label">Valutazione</span>
-              <span class="badge" id="ratingBadge">-</span>
+              <span class="badge js-badge">-</span>
             </div>
             <div class="stat stat--wide">
               <span class="stat-label">Spinta stimata</span>
-              <span class="stat-value stat-value--sub" id="thrustValue">-</span>
+              <span class="stat-value stat-value--sub js-thrust">-</span>
+              <div class="range-bar hidden js-range-wrap">
+                <div class="range-track">
+                  <div class="range-fill js-range-fill"></div>
+                </div>
+                <div class="range-labels">
+                  <span class="js-range-min"></span>
+                  <span class="js-range-max"></span>
+                </div>
+              </div>
+            </div>
+            <div class="stat stat--wide">
+              <span class="stat-label">Ingombro sullo specchio di poppa</span>
+              <div class="diagram">
+                <svg viewBox="0 0 100 20" preserveAspectRatio="none" class="diagram-svg js-beam-svg" role="img" aria-label="Occupazione dello specchio di poppa rispetto al baglio"></svg>
+                <div class="diagram-axis"><span>0%</span><span>100% baglio</span></div>
+                <div class="diagram-legend">
+                  <span class="legend-item"><i class="legend-dot legend-dot-Minimo"></i>Minimo</span>
+                  <span class="legend-item"><i class="legend-dot legend-dot-Buono"></i>Buono</span>
+                  <span class="legend-item"><i class="legend-dot legend-dot-Eccellente"></i>Eccellente</span>
+                </div>
+              </div>
             </div>
           </div>
-          <ul class="tips" id="tipsList"></ul>
+          <ul class="tips js-tips"></ul>
         </div>
       </div>
 
@@ -416,6 +525,58 @@
       <div class="footer-text">Made with ❤️ by FD</div>
     </div>
   </div>
+
+  <!-- Card di esportazione (fuori schermo): riepilogo pulito per lo screenshot,
+       senza i controlli del form. Popolata insieme al pannello risultati. -->
+  <div class="export-card" id="exportCard">
+    <div class="app-header">
+      <h1>Calcolo Coefficiente Interceptor</h1>
+      <p>Dimensionamento rapido e stima di spinta per interceptor Serie E / Serie S.</p>
+    </div>
+    <div class="result-panel">
+      <div class="stat-grid">
+        <div class="stat">
+          <span class="stat-label">Coefficiente Z</span>
+          <span class="stat-value js-z">-</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Valutazione</span>
+          <span class="badge js-badge">-</span>
+        </div>
+        <div class="stat stat--wide">
+          <span class="stat-label">Spinta stimata</span>
+          <span class="stat-value stat-value--sub js-thrust">-</span>
+          <div class="range-bar hidden js-range-wrap">
+            <div class="range-track">
+              <div class="range-fill js-range-fill"></div>
+            </div>
+            <div class="range-labels">
+              <span class="js-range-min"></span>
+              <span class="js-range-max"></span>
+            </div>
+          </div>
+        </div>
+        <div class="stat stat--wide">
+          <span class="stat-label">Ingombro sullo specchio di poppa</span>
+          <div class="diagram">
+            <svg viewBox="0 0 100 20" preserveAspectRatio="none" class="diagram-svg js-beam-svg" role="img" aria-label="Occupazione dello specchio di poppa rispetto al baglio"></svg>
+            <div class="diagram-axis"><span>0%</span><span>100% baglio</span></div>
+            <div class="diagram-legend">
+              <span class="legend-item"><i class="legend-dot legend-dot-Minimo"></i>Minimo</span>
+              <span class="legend-item"><i class="legend-dot legend-dot-Buono"></i>Buono</span>
+              <span class="legend-item"><i class="legend-dot legend-dot-Eccellente"></i>Eccellente</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <ul class="tips js-tips"></ul>
+    </div>
+    <div class="disclaimer">
+      Coefficiente Z secondo una metodologia standard di dimensionamento interceptor. Spinta: stima teorica non calibrata su dati reali di produzione, da trattare come ordine di grandezza.
+    </div>
+    <div class="footer-text">Made with ❤️ by FD</div>
+  </div>
+
   <script>
     /* =========================================================================
      * Catalogo modelli interceptor (Serie E / Serie S)
@@ -496,6 +657,83 @@
       return { min: 0.5, good: 0.8 };
     }
 
+    /* --- Helper per scrivere lo stesso dato sia nel pannello live sia nella
+     * card di esportazione (entrambi condividono le stesse classi .js-*). --- */
+    function setText(className, text) {
+      document.querySelectorAll('.' + className).forEach(el => { el.textContent = text; });
+    }
+    function setBadge(rating) {
+      document.querySelectorAll('.js-badge').forEach(el => {
+        el.textContent = rating;
+        el.className = 'badge js-badge badge-' + rating;
+      });
+    }
+    function setTips(tips) {
+      document.querySelectorAll('.js-tips').forEach(ul => {
+        ul.innerHTML = '';
+        tips.forEach(tip => {
+          const li = document.createElement('li');
+          li.textContent = tip;
+          ul.appendChild(li);
+        });
+      });
+    }
+    function setBeamSvg(svgMarkup) {
+      document.querySelectorAll('.js-beam-svg').forEach(svg => { svg.innerHTML = svgMarkup; });
+    }
+    function setRangeVisible(visible) {
+      document.querySelectorAll('.js-range-wrap').forEach(el => el.classList.toggle('hidden', !visible));
+    }
+    function setRange(min, max) {
+      const domain = max * 1.15;
+      const leftPct = (min / domain) * 100;
+      const widthPct = ((max - min) / domain) * 100;
+      document.querySelectorAll('.js-range-fill').forEach(el => {
+        el.style.left = leftPct + '%';
+        el.style.width = widthPct + '%';
+      });
+      setText('js-range-min', Math.round(min) + ' kg');
+      setText('js-range-max', Math.round(max) + ' kg');
+    }
+
+    /* Diagramma SVG dell'ingombro: fasce di valutazione (Minimo/Buono/
+     * Eccellente) sullo sfondo, blocchi impilati per ogni coppia attiva sopra,
+     * linea tratteggiata sull'obiettivo Z=1 (100% del baglio). Nessun testo
+     * dentro l'SVG (le etichette sono in HTML) per restare robusto anche
+     * nello screenshot html2canvas. */
+    function buildBeamSvg(pairContributions, zFactor, zMin, zGood) {
+      const domainMax = Math.max(1, zFactor) * 1.08;
+      const pct = v => (Math.min(v, domainMax) / domainMax) * 100;
+
+      let svg = '';
+      const bands = [
+        { from: 0, to: zMin, cls: 'band-min' },
+        { from: zMin, to: zGood, cls: 'band-good' },
+        { from: zGood, to: 1, cls: 'band-exc' },
+      ];
+      bands.forEach(b => {
+        if (b.to <= b.from) return;
+        const x = pct(b.from);
+        const w = pct(b.to) - x;
+        svg += `<rect x="${x.toFixed(2)}" y="0" width="${w.toFixed(2)}" height="9" class="${b.cls}" />`;
+      });
+
+      let cursor = 0;
+      const opacities = [1, 0.7, 0.45];
+      pairContributions.forEach((seg, i) => {
+        if (seg <= 0) return;
+        const x = pct(cursor);
+        const w = pct(cursor + seg) - x;
+        svg += `<rect x="${x.toFixed(2)}" y="11" width="${w.toFixed(2)}" height="9" fill="var(--accent)" opacity="${opacities[i] ?? 0.4}" />`;
+        cursor += seg;
+      });
+
+      const targetX = pct(1).toFixed(2);
+      svg += `<line x1="${targetX}" y1="0" x2="${targetX}" y2="20" class="target-line" />`;
+
+      return svg;
+    }
+
     function showEmptyState() {
       document.getElementById('resultPanel').dataset.state = 'empty';
       document.getElementById('resultEmpty').classList.remove('hidden');
@@ -519,11 +757,11 @@
     function calculateCoefficient() {
       const length = parseFloat(document.getElementById('length').value);
       const beam = parseFloat(document.getElementById('beam').value);
-      const speedKnots = parseFloat(document.getElementById('speed').value);
+      const speedKnots = parseFloat(document.getElementById('speed').value); // può essere NaN: campo facoltativo
 
-      // Validazione input di base
-      if (!(length > 0) || !(beam > 0) || !(speedKnots > 0)) {
-        showErrorState('Inserisci lunghezza, baglio e velocità con valori numerici maggiori di zero.');
+      // Validazione input di base (la velocità NON è obbligatoria: serve solo per la spinta)
+      if (!(length > 0) || !(beam > 0)) {
+        showErrorState('Inserisci lunghezza e baglio con valori numerici maggiori di zero.');
         return;
       }
 
@@ -533,6 +771,7 @@
 
       let totalZLength = 0;   // m, per il coefficiente Z
       let totalArea = 0;      // m², area frontale reale delle lame (per la spinta)
+      const pairContributions = []; // contributo di Z di ogni coppia attiva, per il diagramma
       const seriesUsed = new Set();
       const chineSuggestions = new Set();
 
@@ -542,9 +781,11 @@
         const qty = parseFloat(document.getElementById(numberIds[i]).value) || 0;
         if (!model || qty <= 0) continue;
 
-        totalZLength += (model.zLength / 1000) * qty;
+        const pairZLength = (model.zLength / 1000) * qty;
+        totalZLength += pairZLength;
         totalArea += (model.zLength / 1000) * SERIES[model.series].stroke * qty;
         seriesUsed.add(model.series);
+        pairContributions.push(pairZLength / beam);
 
         if (model.chineOf) {
           chineSuggestions.add(model.label + ' → ' + modelById(model.chineOf).label);
@@ -566,14 +807,19 @@
       else if (zFactor < zGood) rating = 'Buono';
       else rating = 'Eccellente';
 
-      // Spinta stimata: F = 1/2 · ρ · V² · A · Cl, intervallo su Cl (letteratura, non calibrato su dati di produzione)
-      const rho = 1025;              // kg/m³, acqua di mare
-      const g = 9.81;                // m/s²
-      const Vms = speedKnots * 0.514444; // nodi → m/s
-      const CL_MIN = 1.0;
-      const CL_MAX = 1.8;
-      const forceKgMin = (0.5 * rho * Vms * Vms * totalArea * CL_MIN) / g;
-      const forceKgMax = (0.5 * rho * Vms * Vms * totalArea * CL_MAX) / g;
+      // Spinta stimata (facoltativa): F = 1/2 · ρ · V² · A · Cl, intervallo su Cl
+      // (letteratura idrodinamica, non calibrato su dati di produzione)
+      const hasSpeed = Number.isFinite(speedKnots) && speedKnots > 0;
+      let forceKgMin = null, forceKgMax = null;
+      if (hasSpeed) {
+        const rho = 1025;              // kg/m³, acqua di mare
+        const g = 9.81;                // m/s²
+        const Vms = speedKnots * 0.514444; // nodi → m/s
+        const CL_MIN = 1.0;
+        const CL_MAX = 1.8;
+        forceKgMin = (0.5 * rho * Vms * Vms * totalArea * CL_MIN) / g;
+        forceKgMax = (0.5 * rho * Vms * Vms * totalArea * CL_MAX) / g;
+      }
 
       // Consigli
       const tips = [];
@@ -587,39 +833,41 @@
         tips.push('Configurazione eccellente rispetto alla lunghezza dello scafo.');
       }
 
-      if (length > 10 && seriesUsed.has('S') && !seriesUsed.has('E')) {
-        tips.push('Scafo sopra i 10 m: in linea generale si consiglia la Serie E. La Serie S è compatibile e può essere abbinata alla Serie E, ma non viceversa: valuta di integrare o passare a interceptor Serie E.');
-      } else if (length <= 10 && seriesUsed.has('E') && !seriesUsed.has('S')) {
+      if (length > 10 && seriesUsed.size === 1 && seriesUsed.has('S')) {
+        tips.push('Scafo sopra i 10 m: in linea generale si consiglia la Serie E; valuta di integrare o sostituire con interceptor Serie E.');
+      } else if (length <= 10 && seriesUsed.size === 1 && seriesUsed.has('E')) {
         tips.push('Scafo entro i 10 m: la Serie S è generalmente sufficiente e più economica. La Serie E resta comunque compatibile, se già scelta per altri motivi.');
-      } else if (seriesUsed.has('E') && seriesUsed.has('S')) {
-        tips.push('Configurazione mista Serie S + Serie E: combinazione supportata (la Serie S è compatibile con la Serie E).');
+      }
+      // Solo quando la configurazione mescola davvero le due serie: il kit
+      // principale deve essere la Serie E, la Serie S si aggiunge alla E
+      // (compatibilità in un solo senso, non viceversa).
+      if (seriesUsed.has('E') && seriesUsed.has('S')) {
+        tips.push('Configurazione mista Serie E + Serie S: il kit principale deve essere la Serie E; la Serie S si aggiunge alla Serie E, non viceversa.');
       }
 
       if (chineSuggestions.size > 0) {
         tips.push('A parità di lunghezza, la variante CHINE offre prestazioni superiori: valuta la sostituzione dove possibile → ' + Array.from(chineSuggestions).join('; ') + '.');
       }
 
-      // Rendering del risultato
+      // Rendering del risultato (pannello live + card di esportazione)
       document.getElementById('resultPanel').dataset.state = 'content';
       document.getElementById('resultEmpty').classList.add('hidden');
       document.getElementById('resultError').classList.add('hidden');
 
-      document.getElementById('zValue').textContent = zFactor.toFixed(2);
+      setText('js-z', zFactor.toFixed(2));
+      setBadge(rating);
+      setBeamSvg(buildBeamSvg(pairContributions, zFactor, zMin, zGood));
 
-      const badge = document.getElementById('ratingBadge');
-      badge.textContent = rating;
-      badge.className = 'badge badge-' + rating;
+      if (hasSpeed) {
+        setText('js-thrust', `${forceKgMin.toFixed(0)}–${forceKgMax.toFixed(0)} kg a ${speedKnots} nodi`);
+        setRange(forceKgMin, forceKgMax);
+        setRangeVisible(true);
+      } else {
+        setText('js-thrust', 'Inserisci una velocità per stimare la spinta');
+        setRangeVisible(false);
+      }
 
-      document.getElementById('thrustValue').textContent =
-        `${forceKgMin.toFixed(0)}–${forceKgMax.toFixed(0)} kg a ${speedKnots} nodi`;
-
-      const tipsList = document.getElementById('tipsList');
-      tipsList.innerHTML = '';
-      tips.forEach(tip => {
-        const li = document.createElement('li');
-        li.textContent = tip;
-        tipsList.appendChild(li);
-      });
+      setTips(tips);
 
       document.getElementById('resultContent').classList.remove('hidden');
       document.getElementById('saveButton').classList.remove('hidden');
@@ -627,7 +875,7 @@
     }
 
     function saveScreenshot() {
-      html2canvas(document.querySelector("#capture")).then(canvas => {
+      html2canvas(document.querySelector('#exportCard')).then(canvas => {
         const link = document.createElement('a');
         link.download = 'calcolo_interceptor.png';
         link.href = canvas.toDataURL();
